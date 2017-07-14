@@ -22,6 +22,6 @@ jobs:
           docker push quay.io/ninnemana/fuz:$TAG
 
       - deploy:
-        name: Deploy GitHub Release
-        command: |
-          curl -sL https://git.io/goreleaser | bash
+          name: Deploy GitHub Release
+          command: |
+            curl -sL https://git.io/goreleaser | bash
