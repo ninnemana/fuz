@@ -11,4 +11,17 @@ jobs:
 
       - run: go get -v -t -d ./...
       - run: go test -v ./...
+      - run: go build -o fuz .
+
+      - setup_remote_docker
       
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          docker build -t quay.io/ninnemana/fuz:$TAG .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS -e "$DOCKER_EMAIL" quay.io
+          docker push quay.io/ninnemana/fuz:$TAG
+
+      - deploy:
+        name: Deploy GitHub Release
+        command: |
+          curl -sL https://git.io/goreleaser | bash
