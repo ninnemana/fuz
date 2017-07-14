@@ -11,6 +11,7 @@ jobs:
 
       - run: go get -v -t -d ./...
       - run: go test -v ./...
+      - run: git tag -a v0.1.${CIRCLE_BUILD_NUM} -m "${CIRCLE_SHA1}" && git push origin v0.1.${CIRCLE_BUILD_NUM}
 
       - deploy:
           name: Deploy GitHub Release
