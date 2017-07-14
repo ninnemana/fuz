@@ -16,3 +16,6 @@ archive:
     linux: Tux
   files:
     - fuz.licence.txt
+
+snapshot:
+  name_template: SNAPSHOT-{{.Commit}}
