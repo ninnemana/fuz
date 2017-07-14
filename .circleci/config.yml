@@ -11,8 +11,10 @@ jobs:
 
       - run: go get -v -t -d ./...
       - run: go test -v ./...
+      - run: git tag -z v
 
       - deploy:
           name: Deploy GitHub Release
           command: |
-            curl -sL https://git.io/goreleaser | bash
+            curl -o goreleaser https://git.io/goreleaser
+            goreleaser --snapshot
