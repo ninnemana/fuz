@@ -15,5 +15,6 @@ jobs:
       - deploy:
           name: Deploy GitHub Release
           command: |
-            curl -o goreleaser https://git.io/goreleaser
-            goreleaser --snapshot
+            curl -o /go/goreleaser https://git.io/goreleaser
+            ls /go
+            /go/goreleaser --snapshot
