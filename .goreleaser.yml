@@ -1,0 +1,21 @@
+builds:
+  - main: main.go
+    binary: fuz
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+# Archive customization
+archive:
+  format: tar.gz
+  replacements:
+    amd64: 64-bit
+    darwin: macOS
+    linux: Tux
+  files:
+    - fuz.licence.txt
+
+snapshot:
+  name_template: SNAPSHOT-{{.Commit}}
