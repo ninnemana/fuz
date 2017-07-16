@@ -13,9 +13,7 @@ jobs:
       - run: go test -v ./...
 
       - deploy:
-          release:
-            name: Deploy GitHub Release
-            tag: /v[0-9]+(\.[0-9]+)*(-.*)*/
-            owner: user
-            command: |
-              curl -sL https://git.io/goreleaser | bash -s -- --snapshot
+          name: Deploy GitHub Release
+          command: |
+              git tag -a $CIRCLE_TAG -m $CIRCLE_SHA1 && git push origin $CIRCLE_TAG
+              curl -sL https://git.io/goreleaser | bash
