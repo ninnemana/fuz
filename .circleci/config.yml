@@ -15,5 +15,5 @@ jobs:
       - deploy:
           name: Deploy GitHub Release
           command: |
-              git tag -a $CIRCLE_TAG -m $CIRCLE_SHA1 && git push origin $CIRCLE_TAG
+              git tag -a ${CIRCLE_TAG} -m $CIRCLE_SHA1 && git push origin "${CIRCLE_TAG}"
               curl -sL https://git.io/goreleaser | bash
