@@ -1,3 +1,4 @@
+version: 1
 machine:
   environment:
     GOPATH: /home/ubuntu/.go_workspace
