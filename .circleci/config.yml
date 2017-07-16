@@ -11,9 +11,3 @@ jobs:
 
       - run: go get -v -t -d ./...
       - run: go test -v ./...
-
-      - deploy:
-          name: Deploy GitHub Release
-          command: |
-              git tag -a ${CIRCLE_TAG} -m "${CIRCLE_SHA1}" && git push origin "${CIRCLE_TAG}"
-              curl -sL https://git.io/goreleaser | bash
