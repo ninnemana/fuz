@@ -8,50 +8,50 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// func TestLoad(t *testing.T) {
-// 	h := Hosts{}
+func TestLoad(t *testing.T) {
+	h := Hosts{}
 
-// 	err := h.Load()
-// 	assert.Error(t, err)
+	err := h.Load()
+	assert.Error(t, err)
 
-// 	h.Path = "/etc/hosts"
-// 	err = h.Load()
-// 	assert.NoError(t, err)
-// }
+	h.Path = "/etc/hosts"
+	err = h.Load()
+	assert.NoError(t, err)
+}
 
-// func TestIsWritable(t *testing.T) {
-// 	h := Hosts{}
-// 	assert.False(t, h.IsWritable())
+func TestIsWritable(t *testing.T) {
+	h := Hosts{}
+	assert.False(t, h.IsWritable())
 
-// 	h.Path = "/etc/hosts"
-// 	assert.False(t, h.IsWritable())
+	h.Path = "/etc/hosts"
+	assert.False(t, h.IsWritable())
 
-// 	dir, err := os.Getwd()
-// 	assert.NoError(t, err)
-// 	path := fmt.Sprintf("%s/test_hosts", dir)
+	dir, err := os.Getwd()
+	assert.NoError(t, err)
+	path := fmt.Sprintf("%s/test_hosts", dir)
 
-// 	f, err := os.Create(path)
-// 	assert.NoError(t, err)
-// 	defer func() {
-// 		f.Close()
-// 		os.Remove(path)
-// 	}()
+	f, err := os.Create(path)
+	assert.NoError(t, err)
+	defer func() {
+		f.Close()
+		os.Remove(path)
+	}()
 
-// 	h.Path = path
-// 	assert.True(t, h.IsWritable())
-// }
+	h.Path = path
+	assert.True(t, h.IsWritable())
+}
 
-// func TestNewHostsRecord(t *testing.T) {
-// 	_, err := NewHostsRecord("")
-// 	assert.Error(t, err)
+func TestNewHostsRecord(t *testing.T) {
+	_, err := NewHostsRecord("")
+	assert.Error(t, err)
 
-// 	_, err = NewHostsRecord("###")
-// 	assert.Error(t, err)
+	_, err = NewHostsRecord("###")
+	assert.Error(t, err)
 
-// 	r, err := NewHostsRecord("123:")
-// 	assert.NoError(t, err)
-// 	assert.Error(t, r.Error)
-// }
+	r, err := NewHostsRecord("123:")
+	assert.NoError(t, err)
+	assert.Error(t, r.Error)
+}
 
 func TestFlush(t *testing.T) {
 	h := &Hosts{
