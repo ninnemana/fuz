@@ -117,31 +117,42 @@ func (h *Hosts) Set(ip string, hosts ...string) error {
 		return errors.Errorf("%q is an invalid IP address.", ip)
 	}
 
+	// local the hosts object
 	h.Lock()
 	defer h.Unlock()
+
+	// get the position of the IP in our current Hosts records.
+	// if we find a position, we will do an update to the existing
+	// record, otherwise we'll append.
 	position := h.getIpPosition(ip)
-	if position == -1 {
+	switch position {
+	case -1:
+
+		// parse the line
 		rec, err := NewHostsRecord(buildRawLine(ip, hosts))
 		if err != nil {
 			return err
 		}
-		// Ip line is not in file, so we just append our new record.
 
+		// new record, true insert
 		h.Records = append(h.Records, *rec)
-	} else {
-		// Otherwise, we replace the record in the correct position
+	default:
+
 		newHosts := h.Records[position].Hosts
 		for _, addHost := range hosts {
-			if itemInSlice(addHost, newHosts) {
+			if in(addHost, newHosts) {
 				continue
 			}
 
 			newHosts = append(newHosts, addHost)
 		}
+
 		rec, err := NewHostsRecord(buildRawLine(ip, newHosts))
 		if err != nil {
 			return err
 		}
+
+		// update
 		h.Records[position] = *rec
 	}
 
@@ -157,37 +168,54 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 	var output []Record
 
 	if net.ParseIP(ip) == nil {
-		return errors.New(fmt.Sprintf("%q is an invalid IP address.", ip))
+		return errors.Errorf("%q is an invalid IP address.", ip)
+	}
+
+	if len(h.Records) == 0 {
+		return errors.New("Hosts file contained no records")
+	}
+
+	// create a map of the hosts for indexed lookup
+	var hostMap map[string]string
+	for _, h := range hosts {
+		hostMap[h] = h
 	}
 
 	for _, r := range h.Records {
 
-		// Bad lines or comments just get readded.
 		if r.Error != nil || r.IsComment() || r.LocalPtr != ip {
 			output = append(output, r)
 			continue
 		}
 
+		// now that we know we have the right record for the IP address,
+		// we need to update the host references for this IP.
+
 		var newHosts []string
-		for _, checkHost := range r.Hosts {
-			if !itemInSlice(checkHost, hosts) {
-				newHosts = append(newHosts, checkHost)
+		for _, h := range r.Hosts {
+			if !in(h, hosts) {
+				newHosts = append(newHosts, h)
 			}
 		}
 
-		// If hosts is empty, skip the line completely.
 		if len(newHosts) > 0 {
-			nrRaw := r.LocalPtr
+			raw := r.LocalPtr
 
-			for _, host := range newHosts {
-				nrRaw = fmt.Sprintf("%s %s", nrRaw, host)
+			for i, h := range newHosts {
+				switch i {
+				case 0:
+					raw = fmt.Sprintf("%s\t%s", raw, h)
+				default:
+					raw = fmt.Sprintf("%s %s", raw, h)
+				}
 			}
-			nr, err := NewHostsRecord(nrRaw)
+
+			rec, err := NewHostsRecord(raw)
 			if err != nil {
-				return err
+				continue
 			}
 
-			output = append(output, *nr)
+			output = append(output, *rec)
 		}
 	}
 
@@ -204,7 +232,7 @@ func (h Hosts) getHostPosition(ip string, host string) int {
 			continue
 		}
 
-		if ip == rec.LocalPtr && itemInSlice(host, rec.Hosts) {
+		if ip == rec.LocalPtr && in(host, rec.Hosts) {
 			return i
 		}
 	}
@@ -226,7 +254,7 @@ func (h Hosts) getIpPosition(ip string) int {
 	return -1
 }
 
-func itemInSlice(item string, list []string) bool {
+func in(item string, list []string) bool {
 	for _, i := range list {
 		if i == item {
 			return true
