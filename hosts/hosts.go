@@ -176,7 +176,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 	}
 
 	// create a map of the hosts for indexed lookup
-	var hostMap map[string]string
+	hostMap := map[string]string{}
 	for _, h := range hosts {
 		hostMap[h] = h
 	}
