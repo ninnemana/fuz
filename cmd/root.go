@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/ninnemana/fuz/cmd/config"
+	"github.com/ninnemana/fuz/cmd/hosts"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -47,6 +48,7 @@ func init() {
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	config.Init(RootCmd)
+	hosts.Init(RootCmd)
 
 	// Here you will define your flags and configuration settings.
 
