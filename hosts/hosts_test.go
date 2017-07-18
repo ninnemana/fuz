@@ -120,4 +120,15 @@ func TestRemove(t *testing.T) {
 	assert.NoError(t, h.Set("127.0.0.1", "facebook.com github.com"))
 	assert.NoError(t, h.Set("0.0.0.0", "twitter.com"))
 
+	assert.NoError(t, h.Remove("127.0.0.1", "github.com"))
+	assert.Len(t, h.Records, 2)
+	assert.Len(t, h.Records[0].Hosts, 1)
+
+	assert.NoError(t, h.Remove("127.0.0.1", ""))
+	assert.Len(t, h.Records, 2)
+	assert.Len(t, h.Records[0].Hosts, 1)
+
+	assert.NoError(t, h.Remove("0.0.0.0", "twitter.com"))
+	assert.Len(t, h.Records, 1)
+	assert.Equal(t, h.Records[0].LocalPtr, "127.0.0.1")
 }
